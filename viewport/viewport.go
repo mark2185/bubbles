@@ -177,6 +177,12 @@ func (m *Model) HalfViewUp() (lines []string) {
 	return m.LineUp(m.Height / 2)
 }
 
+func (m *Model) ReplaceLine(idx int, content string) {
+	if 0 < idx && idx < m.TotalLineCount() {
+		m.lines[idx] = content
+	}
+}
+
 // LineDown moves the view down by the given number of lines.
 func (m *Model) LineDown(n int) (lines []string) {
 	if m.AtBottom() || n == 0 || len(m.lines) == 0 {
@@ -219,6 +225,13 @@ func (m Model) TotalLineCount() int {
 // VisibleLineCount returns the number of the visible lines within the viewport.
 func (m Model) VisibleLineCount() int {
 	return len(m.visibleLines())
+}
+
+// VisibleLineIndices returns the indices of the first and last visible rows
+func (m Model) VisibleLineIndices() (int, int) {
+	top := max(0, m.YOffset)
+	bottom := clamp(m.YOffset+m.Height-1, top, len(m.lines)-1)
+	return top, bottom
 }
 
 // GotoTop sets the viewport to the top position.
